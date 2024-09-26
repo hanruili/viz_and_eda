@@ -1,0 +1,140 @@
+---
+title: "viz_and_eda"
+author: "Hanrui Li"
+date: "2024-09-26"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggridges)
+```
+
+Import the weather data.
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = case_match(
+      id, 
+      "USW00094728" ~ "CentralPark_NY", 
+      "USW00022534" ~ "Molokai_HI",
+      "USS0023B17S" ~ "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything())
+```
+
+Making first plot.
+
+```{r message=FALSE}
+ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point()
+```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+```{r message=FALSE}
+ggp_weather_scatterplot = 
+  weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+
+ggp_weather_scatterplot
+```
+
+More scatterplots.
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, colour = name)) +
+  geom_point()
+```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, colour = name)) +
+  geom_point(alpha = 0.3, size = 0.8) + 
+  geom_smooth(se = FALSE)
+```
+
+Where you define aesthetics can matter.
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.3, size = 0.8) + 
+  geom_smooth(se = FALSE)
+
+# Here geom_smooth() cannot get color = name
+```
+
+Use facetinng real quick
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, colour = name)) +
+  geom_point(alpha = 0.3, size = 0.8) + 
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+# facet_grid to separate, easier to read
+
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, colour = name)) +
+  geom_point(alpha = 0.3, size = 0.8) + 
+  geom_smooth(se = FALSE) +
+  facet_grid(name ~ .)
+# more difficult to read
+```
+
+Make a more interesting scatterplot
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, colour = name)) +
+  geom_point()
+```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, colour = name, size = prcp)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+```
+
+Learning assessment
+
+```{r}
+weather_df |>
+  filter(name == "CentralPark_NY") |>
+  mutate(
+    tmax_fahr = tmax * (9/5) + 32,
+    tmin_fahr = tmin * (9/5) + 32
+  ) |>
+  ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
