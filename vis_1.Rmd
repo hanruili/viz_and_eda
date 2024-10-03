@@ -127,9 +127,122 @@ weather_df |>
 ```
 
 
-```{r}
+## Small tings
 
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.3, size.= 0.6) +
+  geom_smooth(se = FALSE)
 ```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(colour = "lightblue")
+```
+
+## Univariate plots
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram(position = "dodge")
+```
+
+how would I fix this? maybe facet?
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) + 
+  geom_histogram() + 
+  facet_grid(. ~ name)
+```
+
+maybe a density plot?
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) + 
+  geom_density(alpha = 0.3)
+```
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, fill = name)) + 
+  geom_boxplot()
+```
+
+## Violin plots
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, fill = name)) + 
+  geom_violin()
+```
+
+## Ridge plot
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = tmin, y = name)) +
+  geom_density_ridges(colour = "blue")
+```
+
+Learning assessment
+
+```{r message=FALSE}
+weather_df |>
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 0.3)
+
+weather_df |>
+  ggplot(aes(x = name, y = prcp)) +
+  geom_boxplot()
+
+weather_df |>
+  filter(prcp > 10, prcp < 1000) |>
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 0.3)
+```
+
+## Saving and embedding plots
+
+```{r message=FALSE}
+ggp_weather = 
+  weather_df |>
+  ggplot(aes(x = date, y = tmax, colour = name)) +
+  geom_point()
+
+ggsave("ggp_weather.pdf", ggp_weather, width = 8, height = 6)
+```
+
+embedding plots
+
+```{r, fig.width=12, fig.height=12, message=FALSE}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, colour = name)) +
+  geom_point()
+```
+
+```{r, fig.width=6, fig.asp=0.6, message=FALSE}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, colour = name)) +
+  geom_point()
+```
+
 
 
 
